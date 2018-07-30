@@ -10,6 +10,36 @@ from gym import spaces, logger
 from gym.utils import seeding
 import numpy as np
 
+env=gym.make('CartPole-v0')
+
+env_vis= []
+n_episodes= 10
+
+for i_episode in range(n_episodes):
+    observation = env.reset()
+
+    for t in range(100):
+        env_vis.append(env.render(mode = 'rgb_array'))
+        print(observation)
+        action = env.action_space.sample()
+        observation, reward, done, info = env.step(action)
+
+        if done:
+            print("Episode  finished  at  t{}".format(t+1))
+            break
+
+env_render(env_vis)
+
+def env_render(env_vis):
+    plt.figure()
+    plot = plt.imshow(env_vis[0])
+    plt.axis('off')
+
+def animate(i):
+    plot.set_data(env_vis[i])
+    anim = anm.FuncAnimation(plt.gcf(), animate, frames=len(env_vis), interval=20, repeat=True, repeat_delay=20)
+    display(display_animation(anim, default_mode='loop'))
+
 class CartPoleEnv(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array'],
