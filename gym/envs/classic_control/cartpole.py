@@ -10,35 +10,67 @@ from gym import spaces, logger
 from gym.utils import seeding
 import numpy as np
 
-env=gym.make('CartPole-v0')
+# env=gym.make('CartPole-v0')
+#
+# env_vis= []
+# n_episodes= 10
+#
+# for i_episode in range(n_episodes):
+#     observation = env.reset()
+#
+#     for t in range(100):
+#         env_vis.append(env.render(mode = 'rgb_array'))
+#         print(observation)
+#         action = env.action_space.sample()
+#         observation, reward, done, info = env.step(action)
+#
+#         if done:
+#             print("Episode  finished  at  t{}".format(t+1))
+#             break
+#
+# env_render(env_vis)
+#
+# def env_render(env_vis):
+#     plt.figure()
+#     plot = plt.imshow(env_vis[0])
+#     plt.axis('off')
+#
+# def animate(i):
+#     plot.set_data(env_vis[i])
+#     anim = anm.FuncAnimation(plt.gcf(), animate, frames=len(env_vis), interval=20, repeat=True, repeat_delay=20)
+#     display(display_animation(anim, default_mode='loop'))
 
-env_vis= []
-n_episodes= 10
+def policy_logic(env,obs):
+    if obs[2]> 0:
+        return 1
+    else:
+        return 0
 
-for i_episode in range(n_episodes):
-    observation = env.reset()
+def policy_random(env,obs):
+    return env.action_space.sample()
 
-    for t in range(100):
-        env_vis.append(env.render(mode = 'rgb_array'))
-        print(observation)
-        action = env.action_space.sample()
-        observation, reward, done, info = env.step(action)
-
-        if done:
-            print("Episode  finished  at  t{}".format(t+1))
+def experiment(policy, n_episodes, rewards_max):
+    rewards =np.empty(shape=(n_episodes))
+    env=gym.make('CartPole-c0')
+    for i in range(n_episodes):
+        while not done:
+            obs = env.reset()
+            done=False
+            episode_reawrd=0
+        action=policy(env,obs)
+        obs, reward, done,info = env.step(action)
+        episode_reawrd += reward
+        if episode_reward > reward_max:
             break
+        rewards[i] = episode_reward
+    print('Policy:{}, Min reward:{}, Max reward:{}')
+    .format(policy.name, min(rewards),max(rewards))
 
-env_render(env_vis)
+n_episodes = 100 rewards_max = 1000
 
-def env_render(env_vis):
-    plt.figure()
-    plot = plt.imshow(env_vis[0])
-    plt.axis('off')
+experiment(policy_random, n_episodes, rewards_max)
 
-def animate(i):
-    plot.set_data(env_vis[i])
-    anim = anm.FuncAnimation(plt.gcf(), animate, frames=len(env_vis), interval=20, repeat=True, repeat_delay=20)
-    display(display_animation(anim, default_mode='loop'))
+experiment(policy_logic, n_episodes, rewards_max)
 
 class CartPoleEnv(gym.Env):
     metadata = {
